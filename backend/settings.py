@@ -11,19 +11,13 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 # ALLOWED_HOSTS = [
 #     'meteo-app-coral.vercel.app',
@@ -32,10 +26,20 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 #     '127.0.0.1',
 # ]
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
+
+import os, dj_database_url
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret")
+DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
+
+db_conf = dj_database_url.config(conn_max_age=600, ssl_require=True)
+if not db_conf:
+    raise ImproperlyConfigured("DATABASE_URL env var is missing")
+DATABASES = {"default": db_conf}
+
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS","localhost,127.0.0.1").split(",") if h.strip()]
 
 
-# Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -123,10 +127,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 #     }
 # }
 
-import dj_database_url
-DATABASES = {
-  "default": dj_database_url.config(conn_max_age=600, ssl_require=True)
-}
+
 
 
 
