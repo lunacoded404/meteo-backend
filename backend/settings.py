@@ -20,17 +20,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k1#o&^+xdb5-7vcl5t3hz4$+44mq_oxvnf!h8(11x%+u3m-ud$'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [
-    'meteo-app-coral.vercel.app',
-    '.railway.app', # Cho phép tất cả subdomain của railway
-    'localhost',
-    '127.0.0.1',
-]
+# ALLOWED_HOSTS = [
+#     'meteo-app-coral.vercel.app',
+#     '.railway.app', # Cho phép tất cả subdomain của railway
+#     'localhost',
+#     '127.0.0.1',
+# ]
+
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
 
 
 # Application definition
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -106,18 +109,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "HOST": "aws-1-ap-southeast-1.pooler.supabase.com",   
+#         "PORT": 6543,                  
+#         "NAME": "postgres",           
+#         "USER": "postgres.wxqtyismawdnnmmrtwfa",
+#         "PASSWORD": "weatherapp123...",
+#         "OPTIONS": {
+#             "sslmode": "require",
+#         },
+#     }
+# }
+
+import dj_database_url
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": "aws-1-ap-southeast-1.pooler.supabase.com",   
-        "PORT": 6543,                  
-        "NAME": "postgres",           
-        "USER": "postgres.wxqtyismawdnnmmrtwfa",
-        "PASSWORD": "weatherapp123...",
-        "OPTIONS": {
-            "sslmode": "require",
-        },
-    }
+  "default": dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
 
 
