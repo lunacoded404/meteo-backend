@@ -1,1 +1,1 @@
-web: bash -lc "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn backend.wsgi"
+web: bash -lc "python3 manage.py migrate --noinput && python3 manage.py collectstatic --noinput && gunicorn backend.wsgi"
