@@ -25,12 +25,11 @@ SECRET_KEY = 'django-insecure-k1#o&^+xdb5-7vcl5t3hz4$+44mq_oxvnf!h8(11x%+u3m-ud$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# settings.py
 ALLOWED_HOSTS = [
-    "meteo-app-coral.vercel.app",
-    ".vercel.app", 
-    "localhost",
-    "127.0.0.1",
+    'meteo-app-coral.vercel.app',
+    '.railway.app', # Cho phép tất cả subdomain của railway
+    'localhost',
+    '127.0.0.1',
 ]
 
 
@@ -146,5 +145,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
+import os
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
