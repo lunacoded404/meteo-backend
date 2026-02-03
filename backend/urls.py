@@ -6,11 +6,19 @@ from api.views_analytics import track_region, top_provinces
 from api.views_compare import compare_week
 from api.views_reports import admin_export_popup_pdf
 
+
+
+# Token refresh view (used by frontend to exchange refresh -> access)
+from rest_framework_simplejwt.views import TokenRefreshView
+
 urlpatterns = [
     path("admin/", admin.site.urls),
 
     # auth
     path("api/auth/", include("api.auth_urls")),
+
+    # token refresh endpoint
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 
     # các api khác (nếu có)
     path("api/", include("api.urls")),

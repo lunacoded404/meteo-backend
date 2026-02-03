@@ -67,17 +67,34 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# CORS / CSRF allowed origins can be provided via environment variables (comma-separated)
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://meteo-app-coral.vercel.app",
+    o.strip() for o in os.environ.get(
+        "CORS_ALLOWED_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000,https://meteo-app-coral.vercel.app",
+    ).split(",")
+    if o.strip()
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://meteo-app-coral.vercel.app",
+    o.strip() for o in os.environ.get(
+        "CSRF_TRUSTED_ORIGINS",
+        "https://meteo-app-coral.vercel.app",
+    ).split(",")
+    if o.strip()
 ]
 
-CORS_ALLOW_CREDENTIALS = True
+# Allow credentials for cross-origin requests (can be overridden by env)
+CORS_ALLOW_CREDENTIALS = os.environ.get("CORS_ALLOW_CREDENTIALS", "True") == "True"
+
+# Security settings for production
+if not DEBUG:
+    # When behind a proxy (Railway) ensure Django considers requests secure
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # Optional redirect to HTTPS (enable via env if desired)
+    SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "False") == "True"
 
 
 
