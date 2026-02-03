@@ -37,7 +37,7 @@ if not db_conf:
     raise ImproperlyConfigured("DATABASE_URL env var is missing")
 DATABASES = {"default": db_conf}
 
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS","localhost,127.0.0.1").split(",") if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS","localhost,127.0.0.1", "meteo-backend-production-150f.up.railway.app").split(",") if h.strip()]
 
 
 
@@ -80,6 +80,7 @@ CSRF_TRUSTED_ORIGINS = [
     o.strip() for o in os.environ.get(
         "CSRF_TRUSTED_ORIGINS",
         "https://meteo-app-coral.vercel.app",
+        "https://meteo-backend-production-150f.up.railway.app",
     ).split(",")
     if o.strip()
 ]
